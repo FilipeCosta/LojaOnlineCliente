@@ -1,0 +1,25 @@
+<h2>Edite o contato</h2><hr>
+<div class="row">
+	<div class="col-md-6">
+		<div class="well well-sm">
+			<form ng-controller="edit-contact">
+				<div class="form-group">
+					<label for="nome">Nome do contacto</label>
+					<input type="text" class="form-control" ng-model="contactData.nome" placeholder="Introduza nome do contacto" required>
+				</div>
+				<div class="form-group">
+					<label for="email">Email do contacto</label>
+					<div class="input-group">
+					<span class="input-group-addon">@</span>
+					<input type="text" class="form-control" ng-model="contactData.email" placeholder="Introduza email do contacto" required>
+				</div>
+				<div style="margin-top:20px;">
+					<button type="submit" id="{{contactData._id}}" class="btn btn-default" ng-click="cancel()">Cancelar</button>
+					<button type="submit" id="{{contactData._id}}" class="btn btn-success" ng-click="updateContact($event)">ATUALIZAR</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<!-- TODO: falta a página parcial newcontact.html -->

@@ -1,0 +1,63 @@
+<!doctype html>
+<!-- Nome do módulo Angular JS : bookapp -->
+<html lang="en" ng-app="lojaApp">
+
+<head>
+	<meta charset="utf-8">
+	<title>CONTACTOS</title>
+	<meta name="viewport" content="width=device-width">
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link href='http://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+	<link rel="stylesheet" href="public/login.css">
+	<script src="lib/angular/angular.js"></script>
+	<script src="lib/angular-route/angular-ui-router.js"></script>
+	<script src="bower_components/ng-file-upload/ng-file-upload-shim.min.js"></script>
+	<!-- for no html5 browsers support -->
+	<script src="bower_components/ng-file-upload/ng-file-upload.min.js"></script>
+
+	<script src="bower_components/ui-bootstrap-tpls-0.6.0.js"></script>
+	<script src="bower_components/angular-file-upload/dist/angular-file-upload.js"></script>
+	<script src="controller.js"></script>
+</head>
+
+<body>
+	<nav class="navbar navbar-default" ng-controller="MainCtrl">
+		<div class="container-fluid">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
+					aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+				<a class="navbar-brand" href="#">StoreIT</a>
+			</div>
+
+			<!-- Collect the nav links, forms, and other content for toggling -->
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<li><a href ng-click="showLojas()">Lojas</a></li>
+					<li ng-show="checkLogin()"><a href ng-click="showProducts()">Os meus produtos</a></li>
+				</ul>
+
+				<ul class="nav navbar-nav navbar-right">
+					<li ng-hide="checkLogin()"><a href ng-click="showRegister()">Registar</a></li>
+					<li ng-hide="checkLogin()"><a href ng-click="showLogin()">Login</a></li>
+					<li ng-show="checkLogin()"><a href ng-click="perfil()"><span class="glyphicon glyphicon-user"></span> {{user.nome}}</a></li>
+					<li ng-show="checkLogin()"><a href ng-click="logout()">logout</a></li>
+				</ul>
+			</div>
+			<!-- /.navbar-collapse -->
+		</div>
+		<!-- /.container-fluid -->
+	</nav>
+	<div ui-view>
+	</div>
+</body>
+
+</html>

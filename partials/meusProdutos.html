@@ -1,0 +1,58 @@
+<div id="main" class="container-fluid" ng-controller="meusProdutosController">
+	<div id="top" class="row">
+		<div class="col-md-3">
+		<h2>Os meus produtos</h2>
+	</div>
+
+	<div class="col-md-6">
+		<div class="input-group h2">
+			<input name="data[search]" class="form-control" id="search" type="text" placeholder="Pesquisar produtos">
+			<span class="input-group-btn">
+                <button class="btn btn-primary" type="submit">
+                    <span class="glyphicon glyphicon-search"></span>
+			</button>
+			</span>
+		</div>
+	</div>
+
+	<div class="col-md-3">
+		<a href ng-click="addProduct()" class="btn btn-primary pull-right h2">Novo Item</a>
+	</div>
+</div>
+<!-- /#top -->
+
+<hr />
+<div id="list" class="row">
+
+	<div class="table-responsive col-md-12">
+		<table class="table table-striped" cellspacing="0" cellpadding="0">
+			<thead>
+				<tr>
+					<th>Nome</th>
+					<th>Categoria</th>
+					<th>Stock</th>
+					<th>Preço</th>
+					<th class="actions"></th>
+				</tr>
+			</thead>
+			<tbody>
+
+				<tr ng-repeat = "produto in produtos">
+					<td>{{produto.nome}}</td>
+					<td>{{produto.categoria}}</td>
+					<td>{{produto.stock}}</td>
+					<td>{{produto.preco}}</td>
+					<td class="actions">
+						<a class="btn btn-success btn-xs" href ng-click="showVisualizar($index)">Detalhes</a>
+						<a class="btn btn-warning btn-xs" href ng-click="showEditar($index)">Editar</a>
+						<a class="btn btn-danger btn-xs" href ng-click="eliminar($index,'sm')">Eliminar</a>
+					</td>
+				</tr>
+
+			</tbody>
+		</table>
+
+	</div>
+</div>
+<!-- /#list -->
+

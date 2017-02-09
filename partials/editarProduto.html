@@ -1,0 +1,41 @@
+<h2 class="text-center">Editar Produto</h2>
+<div ng-controller="editarProdutoController">
+    <form id="form" name="frm" method="POST" ng-submit="editarProduto()" novalidate>
+        <div class="col-md-offset-3 col-md-6 well well-sm">
+            <div class="form-group">
+                <label>Nome do Produto</label>
+                <input name="nome" class="form-control" ng-model="produtos.nome"  type="text" placeholder="Nome do produto" ng-minlength="3" required>
+            </div>
+            <span ng-show="frm.nome.$dirty && !frm.nome.$valid"></span>
+            <div class="form-group">
+                <label>Categoria</label>
+                <select class="form-control drop" name="categorias" ng-model="produtos.categoria" ng-options="option as option.nome for option in categorias | orderBy:'nome'" required>
+                    <option value="">- Selecciona uma categoria -</option>
+                </select>
+                <span ng-show="frm.categoria.$error.required"></span>
+
+            </div>
+            <div class="form-group">
+                <label>Descrição</label>
+                <textarea name="area" ng-minlength="30" class="form-control" ng-model="produtos.descricao" id="descricao" type="text" placeholder="descricao"></textarea>
+                <span ng-if="check()">Caracteres restantes: {{produtos.descricao.length}}</span>
+            </div>
+            <span ng-show="frm.area.$dirty && !frm.area.$valid"></span>
+            <div class="form-group">
+                <label>Tamanho</label>
+                <select class="form-control" ng-model="produtos.tamanho" ng-options="option for option in produtos.categoria.tamanhos"></select>
+            </div>
+            <div class="form-group">
+                <label>Preco</label>
+                <input class="form-control" required numbers-only maxlength="3"  ng-model="produtos.preco" type="text" placeholder="preco">
+            </div>
+            <div class="form-group">
+                <label>Stock</label>
+                <input class="form-control" minlength="1" ng-model="produtos.stock" required numbers-only maxlength="2"  type="text" placeholder="stock maximo">
+            </div>
+            <input type="submit" class="btn btn-success" value="Editar Produto" ng-disabled="frm.$invalid" />
+            <input type="button" ng-click="cancelar()" class="btn btn-default" value="Cancelar" />
+        </div>
+
+    </form>
+</div>
