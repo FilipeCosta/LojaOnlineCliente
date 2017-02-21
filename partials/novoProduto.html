@@ -1,6 +1,6 @@
 <h2 class="text-center">Criar Produto</h2>
 <div ng-controller="produtoController">
-     <form id="form" name="frm" method="POST" ng-submit="adicionaProduto()" novalidate>
+    <form id="form" name="frm" method="POST" enctype="multipart/form-data" ng-submit="adicionaProduto()" novalidate>
         <div class="col-md-offset-3 col-md-6 well well-sm">
             <div class="form-group">
                 <label>Nome do Produto</label>
@@ -8,7 +8,8 @@
             </div>
             <div class="form-group">
                 <label>Categoria</label>
-                <select class="form-control drop" name="categorias" ng-model="produto.categoria" ng-options="option as option.nome for option in categorias | orderBy:'nome'" required>
+                <select class="form-control drop" name="categorias" ng-model="produto.categoria" ng-options="option as option.nome for option in categorias | orderBy:'nome'"
+                    required>
                     <option value="">- Selecciona uma categoria -</option>
                 </select>
                 <span ng-show="frm.categoria.$error.required"></span>
@@ -26,11 +27,16 @@
             </div>
             <div class="form-group">
                 <label>Preco</label>
-                <input class="form-control" required numbers-only ng-maxlength="3"  ng-model="produto.preco" type="text" placeholder="preco">
+                <input class="form-control" required numbers-only ng-maxlength="3" ng-model="produto.preco" type="text" placeholder="preco">
             </div>
             <div class="form-group">
                 <label>Stock</label>
-                <input class="form-control" ng-minlength="2" ng-model="produto.stock" required numbers-only ng-maxlength="3"  type="text" placeholder="stock maximo">
+                <input class="form-control" ng-minlength="2" ng-model="produto.stock" required numbers-only ng-maxlength="3" type="text"
+                    placeholder="stock maximo">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputFile">Foto</label>
+                <input type="file" id="exampleInputFile" file-model="produto.file">
             </div>
             <input type="submit" class="btn btn-success" value="Criar Produto" ng-disabled="frm.$invalid" />
             <input type="button" ng-click="cancelar()" class="btn btn-default" value="Cancelar" />

@@ -42,26 +42,17 @@ app.config(['$stateProvider', '$urlRouterProvider',
 				templateUrl: "partials/detalhesProduto.html",
 				css: ['public/detalhesProduto.css']
 			})
-		//TODO: roteamento para um novo contato
+			.state('visualizarProdutos', {
+				url: "/visualizarProdutos",
+				templateUrl: "partials/visualizarProdutos.html"
+			})
 	}
 ]);
 
 
-app.service('contato', function () {
-	var property = [];
-	return {
-		getProperty: function () {
-			return property;
-		},
-		setProperty: function (value) {
-			property = value;
-		}
-	};
 
-});
-
-app.service('produto', function () {
-	var property = [];
+app.service('loja', function () {
+	var property = {};
 	return {
 		getProperty: function () {
 			return property;
@@ -107,6 +98,19 @@ app.service('categorias', function () {
 
 
 app.factory('user', function () {
+	var property = {};
+	return {
+		getProperty: function () {
+			return property.nome;
+		},
+		setProperty: function (value) {
+			property.nome = value;
+		}
+	};
+});
+
+
+app.factory('produto', function () {
 	var property = {};
 	return {
 		getProperty: function () {
@@ -163,9 +167,7 @@ app.controller('MainCtrl', function ($scope, $state, $location, $http, user) {
 	}
 
 	$scope.perfil = function () {
-		if ($scope.user.nome != undefined) {
-			return true;
-		};
+		$state.go('perfil');
 	}
 
 	$scope.logout = function () {
@@ -175,12 +177,42 @@ app.controller('MainCtrl', function ($scope, $state, $location, $http, user) {
 
 });
 
-app.controller('produtoController', function ($scope, $state, $http, user,categorias) {
+app.directive('equals', function() {
+  return {
+    restrict: 'A', // only activate on element attribute
+    require: '?ngModel', // get a hold of NgModelController
+    link: function(scope, elem, attrs, ngModel) {
+      if(!ngModel) return; // do nothing if no ng-model
+
+      // watch own value and re-validate on change
+      scope.$watch(attrs.ngModel, function() {
+        validate();
+      });
+
+      // observe the other value and re-validate on change
+      attrs.$observe('equals', function (val) {
+        validate();
+      });
+
+      var validate = function() {
+        // values
+        var val1 = ngModel.$viewValue;
+        var val2 = attrs.equals;
+
+        // set validity
+        ngModel.$setValidity('equals', ! val1 || ! val2 || val1 === val2);
+      };
+    }
+  }
+});
+
+app.controller('produtoController', function ($scope, $state, $http, user,categorias,multipartForm) {
 	//foi necessária esta lógica pois ja tinha alguma lógica para as dropdowns, e depois de implementar o escopo das categorias era um objeto 
 	$scope.produto = {};
 	$scope.categorias = {};
 
 	$scope.categorias = categorias.getProperty();
+
 
 	$scope.adicionaProduto = function () {
 		$scope.produtoAdicionar = {};
@@ -190,14 +222,18 @@ app.controller('produtoController', function ($scope, $state, $http, user,catego
 		$scope.produtoAdicionar.preco = $scope.produto.preco;
 		$scope.produtoAdicionar.stock = $scope.produto.stock;
 		$scope.produtoAdicionar.tamanho = $scope.tamanho;
+		$scope.produtoAdicionar.file = $scope.produto.file
 		var userId = JSON.parse(localStorage.getItem("user")).id;
-		$http.post('http://localhost:8080/lojas/' + userId + '/produtos', $scope.produtoAdicionar)
-			.success(function (data) {
+		var uploadUrl = 'http://localhost:8080/lojas/' + userId + '/produtos';
+		multipartForm.post(uploadUrl, $scope.produtoAdicionar, function (data, status, headers, config) {
+			if (status == 200) {
 				$state.go('meusProdutos');
-			})
-			.error(function (statusText) {
-				console.log(statusText);
-			});
+			}
+			else {
+				$scope.message = "impossível criar produto verifique se introduziu os dados corretamente !";
+			}
+		});
+
 	}
 
 	$scope.cancelar = function () {
@@ -207,37 +243,119 @@ app.controller('produtoController', function ($scope, $state, $http, user,catego
 });
 
 
-app.controller('contact-list', function ($scope, $state, $http, contato) {
+app.controller('visualizarProdutosController', function ($scope, $state, $http, user, categorias, loja, produto) {
+
+	$scope.loja = {};
+	$scope.loja = loja.getProperty();
+	$scope.produtos = [];
+
+
+	$http.get('http://localhost:8080/lojas/' + $scope.loja._id + '/produtos')
+		.success(function (data) {
+			console.log($scope.loja);
+			for (var i in data) {
+				if (data[i].hasOwnProperty('foto')) {
+					data[i].foto.img = 'http://localhost:8080/' + data[i].foto.img;
+					data[i].data = data[i].data.split('T')[0];
+				}
+
+				
+
+			}
+			console.log(data)
+			$scope.produtos = data;
+		})
+
+		.error(function (statusText) {
+			$scope.produtos = [];
+		});
+
+	$scope.visualizarProduto = function ($index) {
+		produto.setProperty($scope.produtos[$index]);
+		$state.go('detalhes');
+	}
+
+});
+
+
+app.controller('perfilController', function ($scope, $state, $http, user, categorias, loja, produto) {
+
+	$scope.loja = {};
+
+	var userId = JSON.parse(localStorage.getItem("user")).id;
+
+
+	$http.get('http://localhost:8080/lojas/' + userId)
+		.success(function (data) {
+			console.log($scope.loja);
+			for (var i in data) {
+				if (data[i].hasOwnProperty('foto')) {
+					data[i].foto.img = 'http://localhost:8080/' + data[i].foto.img;
+				}
+			}
+			$scope.loja = data;
+		})
+
+		.error(function (statusText) {
+			$scope.loja = {};
+		});
+
+
+	$scope.atualizaDados = function () {
+		$http.put('http://localhost:8080/lojas/' + userId + '/telefone', $scope.loja.telefone)
+			.success(function (data) {
+				$state.go('home');
+			})
+
+			.error(function (statusText) {
+				console.log(statusText);
+			});
+
+	}
+
+
+
+	$scope.cancelar = function () {
+		$state.go('home');
+	}
+
+
+
+});
+
+ 
+
+
+
+app.controller('lojasController', function ($scope, $state, $http,loja) {
 	$scope.lojas = [];
-	$scope.currentPage = 0;
-    $scope.pageSize = 2;
-	$scope.numberOfPages = function () {
-        return Math.ceil($scope.lojas.length / $scope.pageSize);
-    }
+	$scope.data = {};
+	
+
+	$scope.visualizarProdutos = function($index) {
+		console.log($index);
+		loja.setProperty($scope.lojas[$index]);
+		$state.go('visualizarProdutos');	
+	}
 
 	$http.get('http://localhost:8080/lojas')
 		.success(function (data) {
-			console.log(data)
-			for(var i;i<data.length;i++)
-			{
-				data[i].foto.img = 'http://localhost:8080/'+data[i].foto.img;
+			
+			
+			for(var i in data)
+			{ 
+				if(data[i].hasOwnProperty('foto'))
+				{
+					data[i].foto.img = 'http://localhost:8080/' + data[i].foto.img;
+				}
+				console.log(data)
+
 			}
 			$scope.lojas = data;
 		})
 		.error(function (statusText) {
 			$scope.lojas = [];
 		});
-
-	$scope.editcontact = function ($index) {
-		$scope.number = $index;
-		contato.setProperty($scope.contatos[$scope.number]);
-		$state.go('editContact');
-	};
-
-	$scope.deleteContact = function ($index) {
-		//TODO: $event.target.id obtém o ID do botão clicado da lista
-		console.log($scope.lojas[$index]);
-	};
 });
 
 app.filter('startFrom', function () {
@@ -249,20 +367,16 @@ app.filter('startFrom', function () {
 
 
 
-app.controller('edit-contact', function ($scope, $http, $state, contato) {
-	$scope.contactData = contato.getProperty();
-
-	//botão: ng-click="updateContact()"
-	$scope.updateContact = function ($event) {
-		var newContactData = {
-			"nome": $scope.contactData.nome,
-			"email": $scope.contactData.email
-		}
-		//TODO: $event.target.id obtém o ID do botão clicado da lista
-	};
+app.controller('detalhesProdutoController', function ($scope, $http, $state, produto) {
+	$scope.produto = {};
+	$scope.produto = produto.getProperty();
+	var userId = JSON.parse(localStorage.getItem("user")).id;
 	//botão: ng-click="cancel()
-	$scope.cancel = function () {
-		//TODO
+	$scope.voltar = function () {
+		if (userId)
+			$state.go('meusProdutos');
+		else
+			$state.go('visualizarProdutos');
 	};
 });
 
@@ -287,6 +401,7 @@ app.directive('numbersOnly', function () {
 	};
 });
 
+
 app.controller('meusProdutosController', function ($scope, $http, $state, produto,$modal) {
 
 	$scope.produtos = [];
@@ -294,9 +409,14 @@ app.controller('meusProdutosController', function ($scope, $http, $state, produt
 	
 
 	var userId = JSON.parse(localStorage.getItem("user")).id;
-	$http.get('http://localhost:8080/lojas/' + userId + '/produtos') //TODO: colocar endereço da aplicação servidor ex(http://localhost:8082/contatos/)
+	$http.get('http://localhost:8080/lojas/' + userId + '/produtos') 
 		.success(function (data) {
-			console.log(data);
+			for(var i in data){
+				data[i].data = data[i].data.split('T')[0];
+				data[i].foto.img = 'http://localhost:8080/' + data[i].foto.img;
+				console.log(data[i].foto.img)
+			}
+			console.log(data[i].foto.img)
 			$scope.produtos = data;
 		})
 		.error(function (statusText) {
@@ -346,7 +466,7 @@ app.controller('modalCtrl', function ($scope, $http, $state, $modalInstance, pro
 	};
 
 	$scope.ok = function () {
-		$http.delete('http://localhost:8080/lojas/' + userId + '/produtos/' + produtoEliminar._id) //TODO: colocar endereço da aplicação servidor ex(http://localhost:8082/contatos/)
+		$http.delete('http://localhost:8080/lojas/' + userId + '/produtos/' + produtoEliminar._id)
 		.success(function (data) {
 			$modalInstance.dismiss('cancel');
 			$state.reload();
@@ -431,7 +551,7 @@ app.directive("ngFileSelect", function () {
 
 
 app.service('multipartForm', ['$http', function ($http) {
-	this.post = function (uploadUrl, data) {
+	this.post = function (uploadUrl, data,callback) {
 		var fd = new FormData();
 		for (var key in data) {
 			fd.append(key, data[key]);
@@ -439,7 +559,9 @@ app.service('multipartForm', ['$http', function ($http) {
 		$http.post(uploadUrl, fd, {
 			transformRequest: angular.identity,
 			headers: { 'Content-Type': undefined }
-		});
+		})
+		.success(callback)
+		.error(callback)
 
 	}
 }])
@@ -448,32 +570,49 @@ app.service('multipartForm', ['$http', function ($http) {
 
 
 
-app.controller('registerController', function ($scope, $http, $state,multipartForm) {
+app.controller('registerController', function ($scope, $http, $state, multipartForm) {
 
-$scope.data = {};
-
-	
-
+	$scope.data = {};
+	$scope.message = "";
 	$scope.register = function (isValid) {
-		
 
-			/*$http.post('http://localhost:8080/registo/', $scope.data)
-				.success(function (data) {
-					$state.go('home');
-				})
-				.error(function (statusText) {
-				});*/
-				console.log($scope.data);
-				var uploadUrl = 'http://localhost:8080/registo/';
-				multipartForm.post(uploadUrl,$scope.data)
-		}
+		console.log($scope.data);
+		var uploadUrl = 'http://localhost:8080/registo/';
+		multipartForm.post(uploadUrl, $scope.data, function (data, status, headers, config) {
+			if (status == 200) {
+				var data = {};
+				data.password = $scope.data.password;
+				data.email = $scope.data.email;
+				$http.post('http://localhost:8080/login/', data)
+					.success(function (data) {
+						var loja = {};
+						loja.nome = data.nome;
+						loja.id = data._id;
+						localStorage.setItem("user", JSON.stringify(loja));
+						console.log(data);
+						//user.setProperty(data.nome);
+						$state.go('home');
+					})
+					.error(function (statusText) {
+						$location.url('/500');
+					});
+			}
+			else {
+				$scope.message = "Falhou. Verifique novamente os campos !";
+			}
 
+		});
+	}
 });
 
 
 
 app.controller('loginController', function ($scope, $http, $state, user) {
 	$scope.message = "";
+
+	$scope.register = function () {
+		$state.go('register')
+	};
 
 	$scope.login = function () {
 

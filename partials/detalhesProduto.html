@@ -1,21 +1,23 @@
-<div class="product-card">
-    <div class="product-image">
-    <img src="http://s18.postimg.org/akrvucg2h/T_Shirt_Mock_Up_Front.png">
-  </div>
-  <div class="product-details">
-    <h1>Product title</h1>
-    <p>Great product title for a great product and all of the extra things a product might need to make it fill an entire card.</p>
-    <button type="button" class="btn">Buy Now</button>
+<div class="container-fluid">
+  <div class="row">
+    <div ng-controller="detalhesProdutoController">
+      <div class="col-md-6">
+        <img class="img-responsive thumbnail myProduct" ng-src={{produto.foto.img}}>
+      </div>
+      <div class="col-md-6" style="margin-top:50px">
+        <div class="row">
+          <h1 class="text-center" style="font-weight:900">{{produto.nome}}<span style="color:green">({{produto.preco | currency : '€'}})</h1>
+          <div class="col-md-6" style="margin-top:50px">
+            <p class="col-md-offset-1 text-left" style="font-size:18px"><b>descricao</b>  {{produto.descricao}}</p>
+            <p class="col-md-offset-1 text-left" style="font-size:18px"><b>stock</b>  {{produto.stock}}</p>
+            <p class="col-md-offset-1 text-left" style="font-size:18px"><b>categoria</b>   {{produto.categoria}}</p>
+            <p class="col-md-offset-1 text-left" style="font-size:18px"><b>tamanho</b>   {{produto.tamanho}}</p>
+            <p class="col-md-offset-1 text-left" style="font-size:18px"><b>data de chegada</b>   {{produto.data}}</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
   </div>
 </div>
-
-<div class="product-card">
-  <div class="product-details">
-    <h1>Product title</h1>
-    <p>Great product title for a great product and all of the extra things a product might need to make it fill an entire card.</p>
-    <button type="button" class="btn">Buy Now</button>
-  </div>
-  <div class="product-image">
-    <img src="http://s18.postimg.org/akrvucg2h/T_Shirt_Mock_Up_Front.png">
-  </div>
 </div>

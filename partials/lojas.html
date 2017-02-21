@@ -1,5 +1,5 @@
 <!-- Page Content -->
-<div class="container" ng-controller="contact-list">
+<div class="container" ng-controller="lojasController">
 
 	<!-- Page Header -->
 	<div class="row">
@@ -19,26 +19,16 @@
 		</div>
 	</form>
 	<div class="row">
-		<div class="col-md-6 portfolio-item" ng-repeat="loja in lojas | filter : search | startFrom:currentPage*pageSize | limitTo:pageSize">
-			<a href="#">
-				<img  class="img-responsive" ng-src={{loja.foto.img}} alt="">
-				<a href="#">{{loja.path}}</a>
+		<div class="col-md-6 portfolio-item" ng-repeat="loja in lojas | filter : search">
+			<a href ng-click="visualizarProdutos($index)">
+				<img  class="img-responsive imageClip" ng-if="loja.foto.img != undefined" ng-src={{loja.foto.img}} alt="">
+				<img  class="img-responsive imageClip" ng-if="loja.foto.img == undefined" ng-src="https://www.telematic.com/Images/no-photo.png"  alt="">
+				<header id="loja">{{loja.nome}}</header>
 			</a>
-			<h3>
-				<a href="#">{{loja.foto.img}}</a>
-			</h3>
-			<p>{{loja.nome}}</p>
+			<span>descricao: </span><a href="#">{{loja.descricao}}</a>
 		</div>
 	</div>
 
-	<hr>
-
-	<button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
-        Previous
-    </button> {{currentPage+1}}/{{numberOfPages()}}
-	<button ng-disabled="currentPage >= data.length/pageSize - 1" ng-click="currentPage=currentPage+1">
-        Next
-    </button>
 	<hr>
 
 	<!-- Footer -->

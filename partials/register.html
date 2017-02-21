@@ -1,92 +1,45 @@
+		
+<div class="container" ng-controller="registerController" class="centerPage" nv-file-drop="" uploader="uploader" filters="queueLimit, customFilter">
+	<div class="row">
+		<div class="col-xs-6 col-xs-offset-3">
+			<div class="well">
+				<form class="form login" ng-submit="register(userForm.$valid)" enctype="multipart/form-data" novalidate>
+					<h2>Registar</h2>
+					<p style="color:red">{{message}}</p>
+					<span ng-show="userForm.nome.$dirty && userForm.nome.$error.required">Este campo é obrigatorio !</span>
+					<span ng-show="userForm.nome.$dirty && userForm.nome.$error.minlength" class="help-block">Tem que especificar um nome maior !</span>
+					<span ng-show="userForm.nome.$dirty && userForm.nome.$error.maxlength" class="help-block">Tem que especificar um nome menor !</span>
+					<div class="form-group">
+						<label>Nome</label>
+						<input id="store_name" type="text" name="nome" ng-minlength="3" ng-maxlength="8" ng-model="data.nome" class="form-control""
+							placeholder="Nome da loja" required>
+					</div>
+					<span class="help-block" ng-show="userForm.email.$dirty && userForm.email.$error.required">Este campo é obrigatorio !</span>
+					<span class="help-block" ng-show="userForm.email.$dirty && userForm.email.$error.email">Tem que inserir um email válido !</span>
 
-  <style>
-    .thumbnail {
-      max-width: 200px; max-height: 150px; line-height: 20px; margin-bottom: 5px;
-    }
-  </style>
+					<div class="form__field">
+						<label>Email</label>
+						<input id="store_name" type="email" name="email" ng-model="data.email" class="form-control" placeholder="Email" required>
+					</div>
 
-<div flow-init>
-<div ng-controller="registerController" class="centerPage" nv-file-drop="" uploader="uploader" filters="queueLimit, customFilter">
+					<span class="help-block" ng-show="userForm.email.$dirty && userForm.password.$error.required">Este campo é obrigatorio</span>
+					<span class="help-block" ng-show="userForm.password.$dirty && userForm.password.$error.minlength">password muito curta </span>
 
-	<form method="POST" name="userForm" class="form login" ng-submit="register(userForm.$valid)" enctype="multipart/form-data"
-		novalidate>
+					<div class="form__field">
+						<label>Password</label>
+						<input id="pw1" name="password" required ng-minlength="6" type="password" ng-model="data.password" class="form-control"" placeholder="Password">
+					</div>
 
+					<div class="form-group">
+						<label for="exampleInputFile">Foto</label>
+						<input type="file" id="exampleInputFile" file-model="data.file">
+					</div>
 
-		<span class="help-block" ng-show="userForm.nome.$error.required">Este campo é obrigatorio !</span>
-		<span ng-show="userForm.nome.$dirty && userForm.nome.$error.minlength" class="help-block">Tem que especificar um nome maior !</span>
-		<span ng-show="userForm.nome.$dirty && userForm.nome.$error.maxlength" class="help-block">Tem que especificar um nome menor !</span>
-
-		<div class="form__field">
-			<label><svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#user"></use></svg><span class="hidden">Nome</span></label>
-			<input id="store_name" type="text" name="nome" ng-minlength="3" ng-maxlength="8" ng-model="data.nome" class="form__input"
-				placeholder="Nome da loja" required>
+					<div class="form__field">
+						<input type="submit" value="Registar" class="btn btn-default hvr-fade" ng-disabled="userForm.$invalid">
+					</div>
+				</form>
+			</div>
 		</div>
-
-
-		<span class="help-block" ng-show="userForm.email.$error.required">Este campo é obrigatorio !</span>
-		<span class="help-block" ng-show="userForm.email.$dirty && userForm.email.$error.email">Tem que inserir um email !</span>
-
-
-		<div class="form__field">
-			<label><svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#email"></use></svg><span class="hidden">  Email</span></label>
-			<input id="store_name" type="email" name="email" ng-model="data.email" class="form__input" placeholder="Email" required>
-		</div>
-
-
-		<span class="help-block" ng-show="userForm.password.$error.required">Este campo é obrigatorio</span>
-		<span class="help-block" ng-show="userForm.password.$dirty && userForm.password.$error.minlength">password muito curta </span>
-
-		<div class="form__field">
-			<label><svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#lock"></use></svg><span class="hidden">Password</span></label>
-			<input id="login__password" name="password" required ng-minlength="6" type="password" ng-model="data.password" class="form__input"
-				placeholder="Password">
-		</div>
-
-		<span class="help-block" ng-show="userForm.password2.$error.required">Este campo é obrigatorio</span>
-
-		<div class="form__field">
-			<label><svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#lock"></use></svg><span class="hidden">Password</span></label>
-			<input id="confirm__password" name="password2" ng-model="dataa.password2" type="password" class="form__input" placeholder="confirmPassword"
-				ng-required ng-minlength="6" ng-maxlength="10">
-		</div>
-
-		<div class='msg-block' ng-show='myForm.$error'>
-			<span class='msg-error' ng-show='myForm.pw2.$error.pwmatch'>
-    				Passwords don't match.
-				</span>
-		</div>
-
-<div>
-
-<div class="form-group">
-	<label for="exampleInputFile">Avatar</label>
-	<input type="file" id="exampleInputFile" file-model="data.file">
-</div>
-	  
-		<div class="form__field">
-			<input type="submit" value="Registar" ng-disabled="userForm.$invalid">
-		</div>
-		<div class="form__field"></div>
-	</form>
-
-
-	<svg xmlns="http://www.w3.org/2000/svg" class="icons">
-		<symbol id="arrow-right" viewBox="0 0 1792 1792">
-			<path d="M1600 960q0 54-37 91l-651 651q-39 37-91 37-51 0-90-37l-75-75q-38-38-38-91t38-91l293-293H245q-52 0-84.5-37.5T128 1024V896q0-53 32.5-90.5T245 768h704L656 474q-38-36-38-90t38-90l75-75q38-38 90-38 53 0 91 38l651 651q37 35 37 90z"
-			/>
-		</symbol>
-		<symbol id="lock" viewBox="0 0 1792 1792">
-			<path d="M640 768h512V576q0-106-75-181t-181-75-181 75-75 181v192zm832 96v576q0 40-28 68t-68 28H416q-40 0-68-28t-28-68V864q0-40 28-68t68-28h32V576q0-184 132-316t316-132 316 132 132 316v192h32q40 0 68 28t28 68z"
-			/>
-		</symbol>
-		<symbol id="user" viewBox="0 0 1792 1792">
-			<path d="M1600 1405q0 120-73 189.5t-194 69.5H459q-121 0-194-69.5T192 1405q0-53 3.5-103.5t14-109T236 1084t43-97.5 62-81 85.5-53.5T538 832q9 0 42 21.5t74.5 48 108 48T896 971t133.5-21.5 108-48 74.5-48 42-21.5q61 0 111.5 20t85.5 53.5 62 81 43 97.5 26.5 108.5 14 109 3.5 103.5zm-320-893q0 159-112.5 271.5T896 896 624.5 783.5 512 512t112.5-271.5T896 128t271.5 112.5T1280 512z"
-			/>
-		</symbol>
-
-		<symbol id="email" viewBox="0 0 32 32">
-			<title>mail3</title>
-			<path d="M26.667 0h-21.333c-2.934 0-5.334 2.4-5.334 5.334v21.332c0 2.936 2.4 5.334 5.334 5.334h21.333c2.934 0 5.333-2.398 5.333-5.334v-21.332c0-2.934-2.399-5.334-5.333-5.334zM5.707 27.707l-2.414-2.414 8-8 0.914 0.914-6.5 9.5zM4.793 6.207l0.914-0.914 10.293 8.293 10.293-8.293 0.914 0.914-11.207 13.207-11.207-13.207zM26.293 27.707l-6.5-9.5 0.914-0.914 8 8-2.414 2.414z"></path>
-		</symbol>
-	</svg>
+	</div>
 </div>
